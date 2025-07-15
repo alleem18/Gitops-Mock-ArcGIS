@@ -1,0 +1,16 @@
+replicaCount: 1
+
+image:
+  repository: redis
+  pullPolicy: IfNotPresent
+  tag: "7.2"
+
+service:
+  type: NodePort
+  port: 6379
+
+serviceAccount:
+  create: false
+
+resources: {}
+

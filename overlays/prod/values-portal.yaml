@@ -1,0 +1,11 @@
+replicaCount: 2  # higher availability in prod
+
+image:
+  repository: nginx
+  tag: "stable"
+  pullPolicy: IfNotPresent
+
+service:
+  type: NodePort
+  port: 80
+

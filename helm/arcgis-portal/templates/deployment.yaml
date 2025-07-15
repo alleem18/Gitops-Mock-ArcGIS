@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "arcgis-portal.fullname" . }}
+  labels:
+    app: {{ include "arcgis-portal.name" . }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ include "arcgis-portal.name" . }}
+  template:
+    metadata:
+      labels:
+        app: {{ include "arcgis-portal.name" . }}
+    spec:
+      containers:
+        - name: nginx
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          ports:
+            - containerPort: 80
+

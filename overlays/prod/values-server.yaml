@@ -1,0 +1,11 @@
+replicaCount: 2  # more stable in prod
+
+image:
+  repository: redis
+  tag: "7.2"
+  pullPolicy: IfNotPresent
+
+service:
+  type: NodePort
+  port: 6379
+
