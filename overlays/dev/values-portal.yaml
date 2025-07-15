@@ -1,7 +1,7 @@
 replicaCount: 1
 
 image:
-  repository: ngin123
+  repository: ng123
   tag: "latest"
   pullPolicy: IfNotPresent
 
