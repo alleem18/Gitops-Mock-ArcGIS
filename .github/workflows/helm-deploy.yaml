@@ -41,6 +41,15 @@ jobs:
         run: |
           aws eks update-kubeconfig --region $AWS_DEFAULT_REGION --name arcgis-eks
 
+      - name: Wait for EKS node to become Ready
+        run: |
+          echo "Waiting for EKS node to become Ready..."
+          for i in {1..15}; do
+            kubectl get nodes --no-headers | grep -q ' Ready ' && break
+            echo "Node not ready yet... waiting 20s"
+            sleep 20
+          done
+
       - name: Install Helm
         uses: azure/setup-helm@v3
         with:
@@ -52,12 +61,10 @@ jobs:
             --values ./overlays/${{ github.event.inputs.environment }}/values-portal.yaml \
             --namespace default \
             --create-namespace \
-            --atomic --timeout 10m
 
       - name: Deploy arcgis-server (redis)
         run: |
           helm upgrade --install arcgis-server ./helm/arcgis-server \
             --values ./overlays/${{ github.event.inputs.environment }}/values-server.yaml \
             --namespace default \
-            --atomic --timeout 10m
 
