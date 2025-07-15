@@ -67,4 +67,9 @@ jobs:
           helm upgrade --install arcgis-server ./helm/arcgis-server \
             --values ./overlays/${{ github.event.inputs.environment }}/values-server.yaml \
             --namespace default \
+      
+      - name: Check pod health
+        run: |
+         echo "Waiting for pods to be healthy..."
+         kubectl rollout status deployment arcgis-portal --timeout=60s
 
