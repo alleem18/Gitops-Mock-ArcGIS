@@ -1,3 +1,13 @@
+terraform {
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "~> 5.29.0"
+    }
+  }
+  required_version = ">= 1.4.0"
+}
+
 provider "aws" {
   region = var.aws_region
 }
@@ -8,20 +18,16 @@ module "vpc" {
 
   name = "arcgis-pe2-vpc"
   cidr = "10.0.0.0/16"
-
-  azs             = ["us-east-1a"]
-  public_subnets  = ["10.0.1.0/24"]
-
+  azs  = ["us-east-1a"]
+  public_subnets = ["10.0.1.0/24"]
   enable_nat_gateway = false
-  single_nat_gateway = false
-  enable_dns_hostnames = true
 }
 
 module "eks" {
-  source          = "terraform-aws-modules/eks/aws"
-  version         = "20.8.4"
+  source  = "terraform-aws-modules/eks/aws"
+  version = "19.21.0"  
 
-  cluster_name    = "arcgis-pe2-eks"
+  cluster_name    = "arcgis-eks"
   cluster_version = "1.29"
   subnet_ids      = module.vpc.public_subnets
   vpc_id          = module.vpc.vpc_id
@@ -31,7 +37,6 @@ module "eks" {
       min_size     = 1
       max_size     = 1
       desired_size = 1
-
       instance_types = ["t3.micro"]
     }
   }
