@@ -52,12 +52,12 @@ jobs:
             --values ./overlays/${{ github.event.inputs.environment }}/values-portal.yaml \
             --namespace default \
             --create-namespace \
-            --atomic --timeout 5m
+            --atomic --timeout 10m
 
       - name: Deploy arcgis-server (redis)
         run: |
           helm upgrade --install arcgis-server ./helm/arcgis-server \
             --values ./overlays/${{ github.event.inputs.environment }}/values-server.yaml \
             --namespace default \
-            --atomic --timeout 5m
+            --atomic --timeout 10m
 
