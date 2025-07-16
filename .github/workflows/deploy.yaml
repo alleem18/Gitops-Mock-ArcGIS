@@ -86,12 +86,23 @@ jobs:
             --create-namespace \
             --atomic --timeout 5m
 
+      - name: Wait for arcgis-portal pod readiness
+        run: |
+          kubectl wait --for=condition=Ready pod -l app.kubernetes.io/name=arcgis-portal --namespace default --timeout=180s
+
+
       - name: Deploy arcgis-server
         run: |
           helm upgrade --install arcgis-server ./helm/arcgis-server \
             --values ./overlays/dev/values-server.yaml \
             --namespace default \
             --atomic --timeout 5m
+
+      - name: Wait for arcgis-server pod readiness
+          run: |
+            echo "Waiting for arcgis-server pod to be Ready..."
+            kubectl wait --for=condition=Ready pod -l app.kubernetes.io/name=arcgis-server --namespace default --timeout=180s
+
 
       - name: Run Helm test for arcgis-portal
         run: helm test arcgis-portal --namespace default --timeout 3m
