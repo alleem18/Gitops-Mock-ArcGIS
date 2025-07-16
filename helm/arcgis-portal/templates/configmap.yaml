@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: arcgis-portal-nginx-config
+data:
+  nginx.conf: |
+    events {}
+    http {
+      server {
+        listen 80;
+        location /status {
+          stub_status;
+          allow all;
+        }
+      }
+    }
+

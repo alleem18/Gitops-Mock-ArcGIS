@@ -1,15 +1,3 @@
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: {{ include "arcgis-portal.fullname" . }}
-  labels:
-    app: arcgis-portal
-    app.kubernetes.io/name: arcgis-portal
-    app.kubernetes.io/instance: {{ .Release.Name }}
-    app.kubernetes.io/component: web
-    app.kubernetes.io/managed-by: {{ .Release.Service }}
-    app.kubernetes.io/version: "1.0"
-    helm.sh/chart: {{ .Chart.Name }}-{{ .Chart.Version }}
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
@@ -28,7 +16,11 @@ spec:
           ports:
             - containerPort: 80
               name: http
-{{- if .Values.metrics.enabled }}
+          volumeMounts:
+            - name: nginx-config
+              mountPath: /etc/nginx/nginx.conf
+              subPath: nginx.conf
+        {{- if .Values.metrics.enabled }}
         - name: nginx-exporter
           image: "{{ .Values.metrics.exporter.image }}"
           args:
@@ -37,4 +29,9 @@ spec:
           ports:
             - containerPort: {{ .Values.metrics.exporter.port }}
               name: metrics
-{{- end }}
+        {{- end }}
+      volumes:
+        - name: nginx-config
+          configMap:
+            name: arcgis-portal-nginx-config
+
