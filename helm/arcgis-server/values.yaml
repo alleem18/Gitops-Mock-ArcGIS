@@ -14,3 +14,10 @@ serviceAccount:
 
 resources: {}
 
+metrics:
+  enabled: true
+  exporter:
+    image: bitnami/redis-exporter:latest
+    port: 9121
+    redis_uri: redis://localhost:6379
+

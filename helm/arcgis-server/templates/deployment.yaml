@@ -28,12 +28,13 @@ spec:
           ports:
             - containerPort: 6379
               name: redis
+{{- if .Values.metrics.enabled }}
         - name: redis-exporter
-          image: bitnami/redis-exporter:latest
+          image: "{{ .Values.metrics.exporter.image }}"
           ports:
-            - containerPort: 9121
+            - containerPort: {{ .Values.metrics.exporter.port }}
               name: metrics
           env:
             - name: REDIS_ADDR
-              value: "redis://localhost:6379"
-
+              value: "{{ .Values.metrics.exporter.redis_uri }}"
+{{- end }}

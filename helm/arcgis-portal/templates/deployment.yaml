@@ -28,12 +28,13 @@ spec:
           ports:
             - containerPort: 80
               name: http
+{{- if .Values.metrics.enabled }}
         - name: nginx-exporter
-          image: nginx/nginx-prometheus-exporter:latest
+          image: "{{ .Values.metrics.exporter.image }}"
           args:
             - -nginx.scrape-uri
-            - http://localhost/status
+            - {{ .Values.metrics.exporter.scrape_uri }}
           ports:
-            - containerPort: 9113
+            - containerPort: {{ .Values.metrics.exporter.port }}
               name: metrics
-
+{{- end }}

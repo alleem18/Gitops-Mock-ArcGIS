@@ -14,3 +14,10 @@ serviceAccount:
 
 resources: {}
 
+metrics:
+  enabled: true
+  exporter:
+    image: nginx/nginx-prometheus-exporter:latest
+    port: 9113
+    scrape_uri: http://localhost/status
+
