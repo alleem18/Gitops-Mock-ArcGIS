@@ -54,6 +54,23 @@ jobs:
         run: |
           helm lint ./helm/arcgis-portal
           helm lint ./helm/arcgis-server
+      
+      - name: Deploy Prometheus monitoring stack
+        run: |
+          helm upgrade --install monitoring prometheus-community/kube-prometheus-stack \
+            -f monitoring/prometheus-values.yaml \
+            --namespace monitoring \
+            --create-namespace \
+            --atomic --timeout 5m
+     
+      - name: Wait for ServiceMonitor CRD
+        run: |
+          echo "Waiting for ServiceMonitor CRD to exist..."
+          for i in {1..30}; do
+            kubectl get crd servicemonitors.monitoring.coreos.com && break
+            echo "Retrying in 10s..."
+            sleep 10
+          done
 
       - name: Deploy arcgis-portal
         run: |
