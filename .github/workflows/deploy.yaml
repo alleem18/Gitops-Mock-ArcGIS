@@ -54,6 +54,12 @@ jobs:
         run: |
           helm lint ./helm/arcgis-portal
           helm lint ./helm/arcgis-server
+
+
+      - name: Add Prometheus Helm repo
+        `run: |
+          helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+          helm repo update
       
       - name: Deploy Prometheus monitoring stack
         run: |
