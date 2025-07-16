@@ -8,9 +8,6 @@ spec:
   containers:
     - name: curl
       image: curlimages/curl
-      command:
-        - curl
-        - --fail
-        - http://{{ include "arcgis-portal.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local
+      command: ["curl", "--fail", "http://{{ .Release.Name }}:80/status"]
   restartPolicy: Never
 
