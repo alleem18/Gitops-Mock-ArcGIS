@@ -1,0 +1,83 @@
+name: Full GitOps Deploy (Terraform + Helm)
+
+on:
+  push:
+    branches: [main]  # Trigger on push to main
+  workflow_dispatch:   # Also allow manual run
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    env:
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.6.6
+
+      - name: Terraform Init & Apply
+        working-directory: terraform/aws
+        run: |
+          terraform init
+          terraform apply -auto-approve
+
+      - name: Install kubectl
+        uses: azure/setup-kubectl@v3
+        with:
+          version: "latest"
+
+      - name: Update kubeconfig for EKS
+        run: |
+          aws eks update-kubeconfig --region $AWS_DEFAULT_REGION --name arcgis-eks
+
+      - name: Wait for node to be ready
+        run: |
+          for i in {1..15}; do
+            kubectl get nodes --no-headers | grep -q ' Ready ' && break
+            echo "Node not ready yet... waiting 20s"
+            sleep 20
+          done
+
+      - name: Install Helm
+        uses: azure/setup-helm@v3
+        with:
+          version: v3.13.3
+
+      - name: Lint Helm charts
+        run: |
+          helm lint ./helm/arcgis-portal
+          helm lint ./helm/arcgis-server
+
+      - name: Deploy arcgis-portal
+        run: |
+          helm upgrade --install arcgis-portal ./helm/arcgis-portal \
+            --values ./overlays/dev/values-portal.yaml \
+            --namespace default \
+            --create-namespace \
+            --atomic --timeout 5m
+
+      - name: Deploy arcgis-server
+        run: |
+          helm upgrade --install arcgis-server ./helm/arcgis-server \
+            --values ./overlays/dev/values-server.yaml \
+            --namespace default \
+            --atomic --timeout 5m
+
+      - name: Run Helm test for arcgis-portal
+        run: helm test arcgis-portal --namespace default --timeout 3m
+
+      - name: Run Helm test for arcgis-server
+        run: helm test arcgis-server --namespace default --timeout 3m
+
+      - name: Check services and pods
+        run: |
+          kubectl get pods -A -o wide
+          kubectl get svc -A
+
