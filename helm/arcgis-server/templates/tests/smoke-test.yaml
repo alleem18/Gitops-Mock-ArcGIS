@@ -8,6 +8,8 @@ spec:
   containers:
     - name: redis
       image: redis:7.2
-      command: ["redis-cli", "ping"]
+      command: ["redis-cli", "-h", "{{ .Release.Name }}", "ping"]
   restartPolicy: Never
+
+
 
