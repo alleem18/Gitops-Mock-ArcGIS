@@ -7,15 +7,10 @@ metadata:
 spec:
   containers:
     - name: curl
-      image: curlimages/curl:latest
+      image: curlimages/curl
       command:
         - curl
-      args:
         - --fail
-        - --connect-timeout
-        - "5"
-        - --retry
-        - "3"
-        - http://{{ .Release.Name }}.{{ .Release.Namespace }}.svc.cluster.local/index.html
+        - http://{{ include "arcgis-portal.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local
   restartPolicy: Never
 
