@@ -9,14 +9,15 @@
 
 ##  Table of Contents
 
-- [ Motivation](#-motivation)
-- [ Esri GitOps Deployment Inspiration](#-esri-gitops-deployment-inspiration)
-- [ Project Structure & Workflow](#-project-structure--workflow)
-- [ Deploy It Yourself (DIY)](#️-deploy-it-yourself-diy)
-  - [ Prerequisites](#-prerequisites)
-  - [ Step-by-Step Workflow](#-step-by-step-workflow)
-- [ Monitoring & Observability](#-monitoring--observability)
-- [ Conclusion](#-conclusion)
+- [Motivation](#motivation)
+- [Esri GitOps Deployment Inspiration](#esri-gitops-deployment-inspiration)
+- [Project Structure & Workflow](#project-structure--workflow)
+- [Deploy It Yourself (DIY)](#️deploy-it-yourself-diy)
+  - [Prerequisites](#-prerequisites)
+  - [Step-by-Step Workflow](#step-by-step-workflow)
+- [Monitoring & Observability](#monitoring--observability)
+- [Conclusion](#-conclusion)
+
 
 ---
 
@@ -224,14 +225,8 @@ If custom dashboards don't appear, import them manually via Grafana UI using fil
 ### 7. Clean-Up and Destroy Workflow
 To reset everything (Terraform + Helm + Monitoring):
 
-```bash
-# From GitHub Actions (preferred)
-git commit -am "Trigger terraform destroy"
-git push
-```
 
 ```bash
-# Or manually
 terraform destroy --auto-approve
 helm uninstall arcgis-portal -n default
 helm uninstall arcgis-server -n default
