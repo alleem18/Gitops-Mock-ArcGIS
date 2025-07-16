@@ -57,7 +57,7 @@ jobs:
 
 
       - name: Add Prometheus Helm repo
-        `run: |
+        run: |
           helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
           helm repo update
       
