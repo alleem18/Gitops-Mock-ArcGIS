@@ -16,7 +16,7 @@
   - [Prerequisites](#-prerequisites)
   - [Step-by-Step Workflow](#step-by-step-workflow)
 - [Monitoring & Observability](#monitoring--observability)
-- [Conclusion](#-conclusion)
+- [Conclusion](#conclusion)
 
 
 ---
@@ -186,7 +186,7 @@ helm test arcgis-server
 helm test arcgis-portal
 ```
 
-### 6. Access Prometheus and Grafana (Monitoring Stack)
+### 6. Monitoring & Observability
 
 A. Grafana Access
 
