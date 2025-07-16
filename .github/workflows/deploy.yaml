@@ -90,6 +90,8 @@ jobs:
         run: |
           kubectl wait --for=condition=Ready pod -l app.kubernetes.io/name=arcgis-portal --namespace default --timeout=180s
 
+      - name: Run Helm test for arcgis-portal
+        run: helm test arcgis-portal --namespace default --timeout 3m
 
       - name: Deploy arcgis-server
         run: |
@@ -104,11 +106,20 @@ jobs:
           kubectl wait --for=condition=Ready pod -l app.kubernetes.io/name=arcgis-server --namespace default --timeout=180s
 
 
-      - name: Run Helm test for arcgis-portal
-        run: helm test arcgis-portal --namespace default --timeout 3m
 
       - name: Run Helm test for arcgis-server
         run: helm test arcgis-server --namespace default --timeout 3m
+
+      - name: Debug Helm test
+        if: failure()
+        run: |
+          echo "==== Test Pod Logs ===="
+          kubectl logs -n default -l "app.kubernetes.io/name=arcgis-portal" --tail=100
+          echo "==== All Pods ===="
+          kubectl get pods -A -o wide
+          echo "==== Events ===="
+          kubectl get events -A | tail -n 50
+
 
       - name: Check services and pods
         run: |

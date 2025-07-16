@@ -8,6 +8,13 @@ spec:
   containers:
     - name: curl
       image: curlimages/curl
-      command: ["curl", "--fail", "--retry", "5", "--retry-delay", "2", "http://{{ .Release.Name }}.default.svc.cluster.local/status"]
+      command:
+        - curl
+        - --fail
+        - --retry
+        - "5"
+        - --retry-delay
+        - "5"
+        - http://{{ include "arcgis-portal.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local
   restartPolicy: Never
 
