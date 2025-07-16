@@ -1,0 +1,22 @@
+grafana:
+  adminPassword: admin123
+  service:
+    type: ClusterIP
+  serviceMonitor:
+    selfMonitor: true
+
+prometheus:
+  prometheusSpec:
+    serviceMonitorSelectorNilUsesHelmValues: false
+    podMonitorSelectorNilUsesHelmValues: false
+    resources:
+      requests:
+        memory: "200Mi"
+        cpu: "100m"
+
+grafana:
+  resources:
+    requests:
+      memory: "100Mi"
+      cpu: "50m"
+
