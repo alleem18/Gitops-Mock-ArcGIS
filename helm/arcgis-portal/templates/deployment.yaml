@@ -14,10 +14,12 @@ spec:
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
+      app: arcgis-portal 
       app.kubernetes.io/name: arcgis-portal
   template:
     metadata:
       labels:
+        app: arcgis-portal 
         app.kubernetes.io/name: arcgis-portal
         app.kubernetes.io/instance: {{ .Release.Name }}
         app.kubernetes.io/component: web
