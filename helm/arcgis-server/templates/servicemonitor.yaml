@@ -1,0 +1,17 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: arcgis-server
+  labels:
+    release: monitoring
+spec:
+  selector:
+    matchLabels:
+      app: {{ include "arcgis-server.name" . }}
+  namespaceSelector:
+    matchNames:
+      - {{ .Release.Namespace }}
+  endpoints:
+    - port: redis
+      interval: 15s
+
