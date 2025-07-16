@@ -1,8 +1,8 @@
-replicaCount: 2  # higher availability in prod
+replicaCount: 1
 
 image:
   repository: nginx
-  tag: "stable"
+  tag: "latest"
   pullPolicy: IfNotPresent
 
 service:

@@ -2,11 +2,17 @@ apiVersion: v1
 kind: Service
 metadata:
   name: {{ include "arcgis-server.fullname" . }}
+  labels:
+    app: arcgis-server
 spec:
   type: {{ .Values.service.type }}
   ports:
-    - port: {{ .Values.service.port }}
+    - name: redis
+      port: 6379
       targetPort: 6379
+    - name: metrics
+      port: 9121
+      targetPort: metrics
   selector:
-    app: {{ include "arcgis-server.name" . }}
+    app.kubernetes.io/name: arcgis-server
 

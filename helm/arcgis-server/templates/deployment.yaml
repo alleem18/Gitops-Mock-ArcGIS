@@ -3,20 +3,37 @@ kind: Deployment
 metadata:
   name: {{ include "arcgis-server.fullname" . }}
   labels:
-    app: {{ include "arcgis-server.name" . }}
+    app: arcgis-server
+    app.kubernetes.io/name: arcgis-server
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/component: backend
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    app.kubernetes.io/version: "1.0"
+    helm.sh/chart: {{ .Chart.Name }}-{{ .Chart.Version }}
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      app: {{ include "arcgis-server.name" . }}
+      app.kubernetes.io/name: arcgis-server
   template:
     metadata:
       labels:
-        app: {{ include "arcgis-server.name" . }}
+        app.kubernetes.io/name: arcgis-server
+        app.kubernetes.io/instance: {{ .Release.Name }}
+        app.kubernetes.io/component: backend
     spec:
       containers:
         - name: redis
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           ports:
             - containerPort: 6379
+              name: redis
+        - name: redis-exporter
+          image: bitnami/redis-exporter:latest
+          ports:
+            - containerPort: 9121
+              name: metrics
+          env:
+            - name: REDIS_ADDR
+              value: "redis://localhost:6379"
 

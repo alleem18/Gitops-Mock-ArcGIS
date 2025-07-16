@@ -3,20 +3,37 @@ kind: Deployment
 metadata:
   name: {{ include "arcgis-portal.fullname" . }}
   labels:
-    app: {{ include "arcgis-portal.name" . }}
+    app: arcgis-portal
+    app.kubernetes.io/name: arcgis-portal
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/component: web
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    app.kubernetes.io/version: "1.0"
+    helm.sh/chart: {{ .Chart.Name }}-{{ .Chart.Version }}
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      app: {{ include "arcgis-portal.name" . }}
+      app.kubernetes.io/name: arcgis-portal
   template:
     metadata:
       labels:
-        app: {{ include "arcgis-portal.name" . }}
+        app.kubernetes.io/name: arcgis-portal
+        app.kubernetes.io/instance: {{ .Release.Name }}
+        app.kubernetes.io/component: web
     spec:
       containers:
         - name: nginx
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           ports:
             - containerPort: 80
+              name: http
+        - name: nginx-exporter
+          image: nginx/nginx-prometheus-exporter:latest
+          args:
+            - -nginx.scrape-uri
+            - http://localhost/status
+          ports:
+            - containerPort: 9113
+              name: metrics
 

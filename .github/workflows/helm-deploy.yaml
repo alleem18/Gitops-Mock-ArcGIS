@@ -1,6 +1,13 @@
 name: Deploy to EKS with Helm
 
 on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'helm/**'
+      - 'overlays/**'
+      - '.github/workflows/helm-deploy.yaml'
   workflow_dispatch:
     inputs:
       environment:
@@ -60,34 +67,41 @@ jobs:
           helm lint ./helm/arcgis-portal
           helm lint ./helm/arcgis-server
 
+      # 🔁 This handles both push and manual dispatch
+      - name: Set environment (dev by default)
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "ENVIRONMENT=${{ github.event.inputs.environment }}" >> $GITHUB_ENV
+          else
+            echo "ENVIRONMENT=dev" >> $GITHUB_ENV
+          fi
 
       - name: Deploy arcgis-portal (nginx)
         run: |
           helm upgrade --install arcgis-portal ./helm/arcgis-portal \
-            --values ./overlays/${{ github.event.inputs.environment }}/values-portal.yaml \
+            --values ./overlays/${{ env.ENVIRONMENT }}/values-portal.yaml \
             --namespace default \
             --create-namespace \
             --atomic --timeout 5m
-     
+
       - name: Deploy arcgis-server (redis)
         run: |
           helm upgrade --install arcgis-server ./helm/arcgis-server \
-            --values ./overlays/${{ github.event.inputs.environment }}/values-server.yaml \
+            --values ./overlays/${{ env.ENVIRONMENT }}/values-server.yaml \
             --namespace default \
-            --atomic --timeout 5m      
-    
+            --atomic --timeout 5m
+
       - name: Show current pods and services
         run: |
           kubectl get pods -o wide
           kubectl get svc
-     
 
       - name: Check pod health and rollout status
         run: |
           echo "Waiting for pods to be healthy..."
           kubectl rollout status deployment arcgis-portal --timeout=60s
           kubectl rollout status deployment arcgis-server --timeout=60s
-      
+
       - name: Run Helm test for arcgis-portal
         run: helm test arcgis-portal --namespace default --timeout 3m
 

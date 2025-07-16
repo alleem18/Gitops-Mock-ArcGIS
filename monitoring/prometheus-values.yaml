@@ -15,8 +15,9 @@ prometheus:
         cpu: "100m"
 
 grafana:
-  resources:
-    requests:
-      memory: "100Mi"
-      cpu: "50m"
+  sidecar:
+    dashboards:
+      enabled: true
+      label: grafana_dashboard
+      folder: General
 
