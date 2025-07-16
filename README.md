@@ -121,7 +121,7 @@ F --> G[Grafana visualizes dashboards]
 ```
 
 
-## > Deploy It Yourself (DIY)
+##  Deploy It Yourself (DIY)
 
 ###  Prerequisites
 
