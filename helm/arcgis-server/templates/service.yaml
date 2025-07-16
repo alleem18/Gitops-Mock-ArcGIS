@@ -4,6 +4,7 @@ metadata:
   name: {{ include "arcgis-server.fullname" . }}
   labels:
     app: arcgis-server
+    monitoring: enabled
 spec:
   type: {{ .Values.service.type }}
   ports:

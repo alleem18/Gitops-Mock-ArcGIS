@@ -4,6 +4,7 @@ metadata:
   name: {{ include "arcgis-portal.fullname" . }}
   labels:
     app: arcgis-portal
+    monitoring: enabled
 spec:
   type: {{ .Values.service.type }}
   ports:

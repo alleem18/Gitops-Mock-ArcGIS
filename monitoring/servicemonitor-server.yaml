@@ -6,7 +6,8 @@ metadata:
     release: monitoring
 spec:
   selector:
-    matchLabels:
+    matchLabels
+      monitoring: enabled
       app: arcgis-server
   namespaceSelector:
     matchNames:
@@ -14,4 +15,4 @@ spec:
   endpoints:
     - port: metrics
       interval: 15s
-
+      path: /metrics
