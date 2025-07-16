@@ -12,7 +12,7 @@
 - [Motivation](#motivation)
 - [Esri GitOps Deployment Inspiration](#esri-gitops-deployment-inspiration)
 - [Project Structure & Workflow](#project-structure--workflow)
-- [Deploy It Yourself (DIY)](#️deploy-it-yourself-diy)
+- [Deploy It Yourself (DIY)](#deploy-it-yourself-diy)
   - [Prerequisites](#-prerequisites)
   - [Step-by-Step Workflow](#step-by-step-workflow)
 - [Monitoring & Observability](#monitoring--observability)
