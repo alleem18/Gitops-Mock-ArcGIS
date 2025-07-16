@@ -8,8 +8,13 @@ spec:
   containers:
     - name: redis
       image: redis:7.2
-      command: ["redis-cli", "-h", "{{ .Release.Name }}", "ping"]
+      command:
+        - redis-cli
+      args:
+        - -h
+        - "{{ .Release.Name }}.{{ .Release.Namespace }}.svc.cluster.local"
+        - -p
+        - "6379"
+        - ping
   restartPolicy: Never
-
-
 

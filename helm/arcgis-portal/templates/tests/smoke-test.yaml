@@ -7,7 +7,15 @@ metadata:
 spec:
   containers:
     - name: curl
-      image: curlimages/curl
-      command: ["curl", "--fail", "http://{{ .Release.Name }}"]
+      image: curlimages/curl:latest
+      command:
+        - curl
+      args:
+        - --fail
+        - --connect-timeout
+        - "5"
+        - --retry
+        - "3"
+        - http://{{ .Release.Name }}.{{ .Release.Namespace }}.svc.cluster.local/index.html
   restartPolicy: Never
 
